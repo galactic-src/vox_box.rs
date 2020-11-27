@@ -10,8 +10,7 @@ use std::i32;
 
 use hound::WavReader;
 use vox_box::spectrum::Resonance;
-use vox_box::periodic::{Hanning, Pitched};
-use vox_box::waves::Filter;
+use vox_box::periodic::{HanningLag, Pitched};
 use dasp::signal::window::Windower;
 use dasp::slice::ToSampleSlice;
 use num::Complex;
@@ -32,7 +31,7 @@ use num::Complex;
 ///               '' using 1:10 with lines axes x1y2
 /// ```
 fn go() -> Result<(), Box<Error>> {
-    let mut reader = try!(WavReader::open("./sample-two_vowels.wav"));
+    let mut reader = try!(WavReader::open("./examples/formant_extraction/sample-two_vowels.wav"));
 
     let (sample_rate, bit_depth) = {
         (reader.spec().sample_rate as f64, reader.spec().bits_per_sample)
@@ -68,11 +67,11 @@ fn go() -> Result<(), Box<Error>> {
 
     let mut frames: Vec<[f64; 1]> = samples.collect();
 
-    for frame in window::Windower::rectangle(&frames[..], bin, hop) {
+    for frame in Windower::rectangle(&frames[..], bin, hop) {
         for s in frame.take(bin) { 
             frame_buffer.push(s[0]); 
         }
-        let pitch: f64 = frame_buffer.to_sample_slice().pitch::<Hanning>(new_sample_rate, 0.2, 0.05, 1.0, 1.0, 1.0, 50., 200.)[0].frequency;
+        let pitch: f64 = frame_buffer.to_sample_slice().pitch::<HanningLag>(new_sample_rate, 0.2, 0.05, 1.0, 50., 200.)[0].frequency;
         let mut resample_buf: Vec<f64> = vec![0f64; (resample_ratio * frame_buffer.len() as f64).ceil() as usize];
 
         vox_box::find_formants(&mut frame_buffer[..], new_sample_rate, 
