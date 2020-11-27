@@ -38,3 +38,7 @@ nightly = []
 [[example]]
 name = "formant_extraction"
 crate-type = ["bin"]
+
+[[example]]
+name = "pitch_detection"
+crate-type = ["bin"]

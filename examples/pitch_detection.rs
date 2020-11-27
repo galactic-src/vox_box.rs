@@ -12,7 +12,6 @@ use vox_box::waves::*;
 
 use dasp::{Signal, signal};
 use dasp::signal::window::Windower;
-use dasp::window::Hanning;
 
 use dasp::slice::ToSampleSlice;
 
@@ -49,6 +48,6 @@ fn main() {
 }
 
 fn analyze_pitch(chunk_data: &[f64], maxima: f64, local_maxima: f64) -> Result<Vec<Pitch<f64>>, ()> {
-    Ok(chunk_data.pitch::<Hanning>(44100., 0.2, local_maxima, maxima, 100., 500.))
+    Ok(chunk_data.pitch::<HanningLag>(44100., 0.2, local_maxima, maxima, 100., 500.))
 }
 
