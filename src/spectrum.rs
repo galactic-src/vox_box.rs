@@ -106,7 +106,7 @@ impl<T: Float> LPC<T> for [T] {
         let (mut aa, _) = work.split_at_mut(n_coeffs);
 
         b1[0] = self[0];
-        b2[self.len() - 2] = self[self.len() - 1];
+        b2[self.len() - 1] = self[self.len() - 1];
 
         for j in 2..self.len() {
             b1[j - 1] = self[j - 1];
